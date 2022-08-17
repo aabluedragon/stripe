@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+
 
 #include "stripe.h"
 #include "stripe-defrag.h"
@@ -17,6 +19,7 @@
 // Written by Foeh Mannay
 // Please refer to http://networkbodges.blogspot.com for more information about this tool.
 // This software is released under the Modified BSD license.
+
 
 params_t *parseParams(int argc, char *argv[]){
 	// Returns a struct with various parameters or NULL if invalid
@@ -544,7 +547,8 @@ int main(int argc, char *argv[]){
 		printf("\nError!\nUnable to open input capture file!\n");
 		return(1);
 	}
-	tempfile = tmpfile();
+	const char* tempfileName = tempnam(".", "tmp_");
+	tempfile = fopen(tempfileName, "wb+");
 	if(tempfile == NULL){
 		printf("Error - could not create temporary file!\n");
 		return(1);
@@ -574,7 +578,8 @@ int main(int argc, char *argv[]){
 	while((packets == -1) && ((parameters->modifiers & NODEFRAG) == 0)){
 	    printf("got fragments, need to reassemble...\n");
 		// Create temporary file for use when re-assembling fragments
-		tempfile = tmpfile();
+		const char* tempfileName = tempnam(".", "tmp_");
+		tempfile = fopen(tempfileName, "wb+");
 		if(tempfile == NULL){
 			printf("Error - could not create temporary file!\n");
 			return(1);
